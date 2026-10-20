@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoralLens Demo</title>
+<meta name="description" content="Interactive prototype of CoralLens: coral-aware frame selection, multi-view VLM reasoning with reasoning traces, and evidence-grounded monitoring reports.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+<div class="top-in">
+<a class="brand" href="../">
+<svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle cx="13" cy="13" r="9" stroke="#5FC4CF" stroke-width="1.8"/><path d="M20 20l6 6" stroke="#5FC4CF" stroke-width="1.8" stroke-linecap="round"/><path d="M13 18v-6M13 14l-3-3M13 13l3-4" stroke="#5FC4CF" stroke-width="1.5" stroke-linecap="round"/></svg>
+<b>CoralLens</b></a>
+<span class="tag">prototype</span>
+<span class="proj"><span style="color:#8EA3A9">Survey</span> <strong>East Flower Garden Banks · Plot T3</strong></span>
+<span class="spacer"></span>
+<span class="org">SPEED Lab · I-SMART · Harbor Branch, Florida Atlantic University</span>
+</div>
+</header>
+
+<div class="wrap">
+<nav class="steps" aria-label="Pipeline steps">
+<div class="eyebrow">Pipeline</div>
+<div id="stepnav"></div>
+<div class="datainfo"><b>In this demo</b>
+<div>Survey video of a NOAA NCRMP fixed plot</div>
+<div>Colony C2, seen from four views</div>
+<div>Coral-tuned VLM with reasoning traces</div></div>
+</nav>
+
+<main>
+
+<!-- 1 · Add video -->
+<section class="pane" data-step="0" aria-labelledby="h0">
+<div><div class="eyebrow">Step 1 of 4</div><h1 id="h0">Add a survey video</h1>
+<p class="lede">Upload underwater survey video. CoralLens keeps only the frames and coral regions worth reading, then runs a coral-tuned vision-language model on them.</p></div>
+<div class="row">
+<div class="col3">
+<label class="drop" id="drop">
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M18 24V8M11 14l7-7 7 7" stroke="#0B6E79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 24v4a2 2 0 002 2h20a2 2 0 002-2v-4" stroke="#0B6E79" stroke-width="2" stroke-linecap="round"/></svg>
+<b id="dropmsg">Drop video here or browse</b>
+<span class="muted small">MP4 or MOV survey video · optional site notes and expert labels</span>
+<input id="up" type="file" multiple aria-label="Choose survey video">
+</label>
+<div class="card" style="padding:0">
+<div style="padding:14px 18px;border-bottom:1px solid #E2E7E9;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>Videos in this project</b><span class="muted small">2 items</span></div>
+<div class="tbl"><table style="min-width:520px">
+<thead><tr><th scope="col" style="padding-left:18px">Video</th><th scope="col">Source</th><th scope="col">Length</th><th scope="col">Status</th></tr></thead>
+<tbody>
+<tr><td class="item" style="padding-left:18px"><img src="assets/v2.jpg" alt=""><span><b>Plot T3 survey</b><span class="muted small">East Flower Garden Banks, 19.5 m</span></span></td><td>NOAA NCRMP</td><td class="mono">[mm:ss]</td><td class="ok">Ready</td></tr>
+<tr><td class="item" style="padding-left:18px"><img src="assets/pulley.jpg" alt=""><span><b>Pulley Ridge ROV transect</b><span class="muted small">mesophotic hard bottom</span></span></td><td>HBOI</td><td class="mono">[mm:ss]</td><td class="ok">Ready</td></tr>
+</tbody></table></div>
+</div>
+</div>
+<div class="col2"><div class="card stack">
+<h2>Analysis settings</h2>
+<label class="field">Frame budget <span class="mono" id="budgetv" style="color:var(--ink)">6 of 8 frames</span><input id="budget" type="range" min="3" max="8" value="6"></label>
+<label class="field">Coral dimensions<select><option>16 CoralVQA dimensions</option><option>Health indicators only</option><option>Morphology only</option></select></label>
+<label class="check"><input type="checkbox" checked><span><b>SAM 2 coral regions</b><span>Focus the VLM on coral, not water or rock</span></span></label>
+<label class="check"><input type="checkbox" checked><span><b>Efficient vision encoder</b><span>Fewer visual tokens per frame</span></span></label>
+<label class="check"><input type="checkbox" checked><span><b>Coral LoRA adapter</b><span>Domain-tuned answers for coral</span></span></label>
+<label class="check"><input type="checkbox" checked><span><b>Reasoning trace + claim check</b><span>Every step and finding cites a frame</span></span></label>
+<button class="btn full" type="button" data-next>Analyze video</button>
+</div></div>
+</div>
+</section>
+
+<!-- 2 · Frames and regions -->
+<section class="pane" data-step="1" aria-labelledby="h1" hidden>
+<div><div class="eyebrow">Step 2 of 4</div><h1 id="h1">Watch less: frames and coral regions</h1>
+<p class="lede">Sharp frames that add new viewpoints are kept; near-duplicates are dropped. Click any frame to inspect it.</p></div>
+<div class="card stack">
+<div class="head" style="align-items:center"><h2>Selected frames</h2>
+<div class="legend2"><span><i style="background:#2DD4BF"></i>kept</span><span><i style="background:#AEBAC0"></i>dropped</span><span><i style="background:#E39A2B"></i>inspecting</span></div></div>
+<div class="strip" id="strip"></div>
+<p class="muted small" id="frameNote" style="margin:0"></p>
+</div>
+<div class="row">
+<div class="col3">
+<div class="head" style="align-items:center">
+<h2 style="margin:0;font-size:17px">Coral regions (SAM 2)</h2>
+<div class="chips" role="group" aria-label="Regions" data-group="regions">
+<button class="chip" type="button" data-v="on" aria-pressed="true">Show regions</button>
+<button class="chip" type="button" data-v="off" aria-pressed="false">Image only</button>
+</div></div>
+<figure class="viewer boxes" id="keyFig"><img id="keyImg" src="assets/key.jpg" alt="Keyframe from the plot survey">
+<div class="bx" style="left:43%;top:35%;width:21%;height:36%;border-color:#2E9E6B"><span style="background:#2E9E6B">C2 brain coral</span></div>
+<div class="bx" style="left:30%;top:28%;width:20%;height:24%;border-color:#D9822B"><span style="background:#D9822B">C4 encrusting</span></div>
+<div class="bx" style="left:74.5%;top:2%;width:25%;height:95%;border-color:#2E86AB"><span style="background:#2E86AB;top:2px;left:2px">C1 massive</span></div>
+<figcaption id="keyCap">keyframe 00:02:40 · 3 coral regions</figcaption></figure>
+</div>
+<div class="col2"><div class="card stack">
+<h2>Efficiency</h2>
+<div class="stats">
+<div class="stat"><div class="v" id="keptStat">6 / 8</div><div class="k">frames kept</div></div>
+<div class="stat"><div class="v">3</div><div class="k">coral regions</div></div>
+</div>
+<div class="small muted" style="margin-top:4px"><b style="color:var(--ink)">Visual tokens per frame</b> (illustrative)</div>
+<div class="tokrow"><span>Standard ViT encoder</span><span class="tokbar"><i style="width:100%;background:#AEBAC0"></i></span><span class="mono small">baseline</span></div>
+<div class="tokrow"><span>Efficient encoder</span><span class="tokbar"><i style="width:22%;background:#1E7F52"></i></span><span class="mono small">fewer</span></div>
+<p class="muted small" style="margin:0">A hybrid convolution–attention encoder emits fewer tokens at high resolution, so the VLM answers sooner on long videos.</p>
+<button class="btn full" type="button" data-next>Reason across views</button>
+</div></div>
+</div>
+</section>
+
+<!-- 3 · Multi-view reasoning -->
+<section class="pane" data-step="2" aria-labelledby="h2" hidden>
+<div><div class="eyebrow">Step 3 of 4</div><h1 id="h2">Reason across views</h1>
+<p class="lede">The coral-tuned VLM answers each view of colony C2 separately, writes a reasoning trace that cites frames, then fuses the answers by agreement.</p></div>
+<div class="card stack">
+<h2 style="font-size:15px">Coral dimension</h2>
+<div class="chips" role="group" aria-label="Coral dimension" data-group="dim" id="dimChips"></div>
+</div>
+<div class="vgrid" id="views"></div>
+<div class="row">
+<div class="col3"><div class="card stack">
+<h2>Reasoning trace</h2>
+<ol class="trace" id="trace"></ol>
+</div></div>
+<div class="col2"><div class="card stack">
+<h2>Fused answer</h2>
+<div class="fused"><span class="big" id="fusedAns">Brain coral</span><span class="badge" id="fusedTag">4 of 4 views agree</span></div>
+<div class="meter" id="meter"><i id="meterI" style="width:100%"></i></div>
+<p class="muted small" id="fusedNote" style="margin:0"></p>
+<p class="kind" style="margin:0">Prompt: “Colony C2: <span id="promptDim">coral type</span>?”</p>
+<button class="btn full" type="button" data-next>Build the report</button>
+</div></div>
+</div>
+</section>
+
+<!-- 4 · Evidence-grounded report -->
+<section class="pane" data-step="3" aria-labelledby="h3" hidden>
+<div class="head"><div><div class="eyebrow">Step 4 of 4</div><h1 id="h3">Verified monitoring report</h1>
+<p class="lede">Every finding links to the frames that support it. Click a finding to see its evidence.</p></div>
+<div class="chips"><button class="btn ghost" type="button" id="csv">Download findings (CSV)</button><button class="btn" type="button" id="pdf" style="min-height:44px">Print / save PDF</button></div></div>
+<div class="card stack">
+<div class="head" style="align-items:center"><h2>Supporting video evidence</h2><span class="muted small" id="evNote"></span></div>
+<div class="strip" id="evStrip"></div>
+</div>
+<article class="report">
+<header><div><div style="font-size:22px;font-weight:600">Plot T3 · coral monitoring report</div><div class="muted small">Generated by the coral-tuned VLM from verified per-view answers · example output</div></div>
+<div class="chips" style="align-items:flex-start"><span class="badge">3 supported</span><span class="badge bad">2 need review</span></div></header>
+<div class="findlist" id="findings"></div>
+<div class="tbl"><table id="claims" style="min-width:600px">
+<thead><tr><th scope="col">Claim</th><th scope="col">Type</th><th scope="col">Evidence</th><th scope="col">Check</th></tr></thead>
+<tbody>
+<tr><td>C2 is a massive brain coral</td><td class="muted">observed</td><td class="mono">02:15, 02:40, 03:58</td><td class="ok">Verified</td></tr>
+<tr><td>C2 tissue colour is normal</td><td class="muted">observed</td><td class="mono">02:15, 02:40, 03:58</td><td class="ok">Verified</td></tr>
+<tr><td>C2 shows bleaching</td><td class="muted">interpretation</td><td class="mono">04:32 (one view)</td><td class="bad">Needs expert review</td></tr>
+<tr><td>Turf algae cover rubble near C2</td><td class="muted">observed</td><td class="mono">06:18</td><td class="ok">Verified</td></tr>
+<tr><td>Disease present</td><td class="muted">interpretation</td><td class="mono">none</td><td class="bad">Uncertain, not stated</td></tr>
+</tbody></table></div>
+<section class="rec" aria-label="Recommendation"><b>Recommended next step</b>
+<p style="margin:2px 0 0;font-size:14px">Ask an HBOI expert to review the possible bleaching on C2 at 04:32, and capture a closer, clearer view of the colony edge on the next survey.</p></section>
+<div class="mono muted" style="font-size:12.5px">Generated by CoralLens prototype · every statement cites its frames</div>
+</article>
+<button class="btn ghost" type="button" data-go="0">Analyze another video</button>
+</section>
+
+</main>
+</div>
+<footer class="site">Prototype interface: upload and processing are not connected to a backend yet. Imagery from NOAA NCRMP and HBOI; VLM answers, reasoning steps and report entries are illustrative. <a href="../">Back to project page</a></footer>
+<script src="app.js"></script>
+</body>
+</html>
