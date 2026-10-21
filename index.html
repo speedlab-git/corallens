@@ -251,7 +251,7 @@ footer b{color:var(--ink-2)}
     <div class="meta">
       <span class="chip"><b>I-SMART</b> + <b>HBOI</b> cross-campus</span>
       <span class="chip">Jan 1 – Dec 31, 2027</span>
-      <span class="chip">16 coral-understanding dimensions</span>
+      <span class="chip">CoralVOS · 150 coral videos</span>
       <span class="chip">Florida Atlantic University</span>
     </div>
     <p class="authors"><strong>Ahmed Imteaj, Ph.D.</strong> (Lead PI, EECS · SPEED Lab) &nbsp;·&nbsp; <strong>Bing Ouyang, Ph.D.</strong> (Co-PI, Harbor Branch Oceanographic Institute)</p>
@@ -266,7 +266,7 @@ footer b{color:var(--ink-2)}
     </div>
 
     <div class="video-shell rv">
-      <video id="teaser" src="assets/coralReef_SPEED_Lab.mp4?v=20261020f" poster="assets/video-poster.jpg?v=20261020f" autoplay muted loop playsinline preload="metadata" controls></video>
+      <video id="teaser" src="assets/coralReef_SPEED_Lab.mp4?v=20261020g" poster="assets/video-poster.jpg?v=20261020g" autoplay muted loop playsinline preload="metadata" controls></video>
       <button class="sound" id="sound" type="button">🔇 Unmute</button>
     </div>
     <div class="video-cap">
@@ -366,7 +366,7 @@ footer b{color:var(--ink-2)}
       <div class="num">03 / Objectives</div>
       <div>
         <h2>Three interconnected objectives.</h2>
-        <p class="lede">Guided by CoralVQA's 16 coral-understanding dimensions (category, colour, shape, size, quantity, spatial distribution, structural integrity, visible health indicators, habitat conditions, and more), each objective removes one obstacle.</p>
+        <p class="lede">Each objective removes one obstacle. Coral regions are learned and tested on CoralVOS, a public benchmark of densely masked coral videos; coral attributes (type, growth form, colour and health, bleaching, damage, partial mortality, structural complexity) are labeled with HBOI experts.</p>
       </div>
     </div>
 
@@ -397,7 +397,7 @@ footer b{color:var(--ink-2)}
             <li><b>Reasoning traces:</b> the model observes, compares views, concludes, and verifies, and each step must cite a frame.</li>
             <li><b>Fuse by agreement.</b> When frames conflict or visibility is poor, the system reports uncertainty instead of forcing an answer.</li>
           </ul>
-          <div class="deliv"><span>Deliverable</span>Multi-frame coral-understanding framework, evaluated across the 16 dimensions against image-based and video-based VLM baselines.</div>
+          <div class="deliv"><span>Deliverable</span>Multi-frame coral-understanding framework, evaluated on coral attributes against image-based and video-based VLM baselines.</div>
         </div>
       </article>
 
@@ -406,7 +406,7 @@ footer b{color:var(--ink-2)}
         <div>
           <h3>Evidence-grounded analysis and scientific reporting</h3>
           <ul>
-            <li><b>Structured reports</b> organized by the 16 dimensions, summarizing coral characteristics and visible ecological conditions.</li>
+            <li><b>Structured reports</b> organized by coral attribute, summarizing coral characteristics and visible ecological conditions.</li>
             <li><b>Frame citations:</b> every observation links to supporting frames and timestamps.</li>
             <li><b>Claim verification</b> checks generated statements against the visual evidence; evidence-aware preference tuning discourages unsupported claims.</li>
             <li><b>Observed vs. interpreted:</b> directly visible traits are separated from biological interpretations that need expert confirmation; missing evidence is stated as "uncertain."</li>
@@ -443,14 +443,14 @@ footer b{color:var(--ink-2)}
     </div>
     <div class="bench">
       <div class="card rv">
-        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div>
-        <h3>CoralVQA</h3>
-        <p>Public coral VQA data: 12,805 images and 277,653 question–answer pairs across 16 dimensions, for coral-specific visual understanding.</p>
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M3 15h18M7 5v14M17 5v14"/></svg></div>
+        <h3>CoralVOS</h3>
+        <p>Public coral video segmentation benchmark: 150 videos from 17 sites (60,456 frames, 1280×720), every frame densely masked for coral. Used for coral-region segmentation, tracking, and frame-selection coverage.</p>
       </div>
       <div class="card rv">
-        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M3 15h18M7 5v14M17 5v14"/></svg></div>
-        <h3>Underwater video</h3>
-        <p>Representative coral footage from public sources and FAU Harbor Branch, extending evaluation from single images to videos.</p>
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <h3>HBOI footage and attributes</h3>
+        <p>Harbor Branch coral footage, with coral attributes and reference observations labeled by HBOI experts for multi-frame reasoning and reporting.</p>
       </div>
       <div class="card rv">
         <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
@@ -461,8 +461,9 @@ footer b{color:var(--ink-2)}
 
     <p class="subhead rv">Questions and how we measure them</p>
     <div class="table rv">
-      <div class="row"><div>Is it efficient?</div><div>Percentage of frames retained, visual tokens, processing time and time-to-first-token, and compute cost, while checking that important coral observations are preserved.</div></div>
-      <div class="row"><div>Is coral understanding accurate?</div><div>Correctness across the 16 dimensions on CoralVQA and expert-reviewed video.</div></div>
+      <div class="row"><div>Is it efficient?</div><div>Percentage of frames retained, visual tokens, processing time and time-to-first-token, and compute cost, while checking that coral masks and observations are preserved (CoralVOS).</div></div>
+      <div class="row"><div>Are coral regions found and tracked?</div><div>Region similarity J, contour accuracy F, and J&amp;F on CoralVOS, against fine-tuned video object segmentation baselines.</div></div>
+      <div class="row"><div>Is coral understanding accurate?</div><div>Correctness of coral attributes on expert-labeled video.</div></div>
       <div class="row"><div>Is it consistent across views?</div><div>Agreement of answers about the same colony across frames, lighting, and turbidity.</div></div>
       <div class="row"><div>Does it know when it cannot tell?</div><div>How often the system correctly reports insufficient visual evidence.</div></div>
       <div class="row"><div>Is the reasoning faithful?</div><div>Whether each reasoning step is supported by the frame it cites.</div></div>
@@ -472,7 +473,7 @@ footer b{color:var(--ink-2)}
     <div class="grid3" style="margin-top:44px;grid-template-columns:1fr 1fr">
       <div class="rv">
         <p class="subhead">Baselines</p>
-        <div class="pill-list"><span>All frames / uniform sampling</span><span>Single-image VLMs</span><span>Video VLMs</span><span>Standard ViT encoder</span><span>Zero-shot (no coral tuning)</span></div>
+        <div class="pill-list"><span>All frames / uniform sampling</span><span>Single-image VLMs</span><span>Video VLMs</span><span>Standard ViT encoder</span><span>VOS methods (STCN, XMem, DeAOT)</span><span>Zero-shot (no coral tuning)</span></div>
       </div>
       <div class="rv">
         <p class="subhead">Ablations</p>
@@ -492,8 +493,8 @@ footer b{color:var(--ink-2)}
       </div>
     </div>
     <div class="visits">
-      <div class="visit rv"><div class="v">Q1 · JAN–MAR</div><div class="m">Watch less</div><p>Assemble coral video datasets; CoralVQA baselines; coral-aware frame selection and efficient visual processing.</p></div>
-      <div class="visit rv"><div class="v">Q2 · APR–JUN</div><div class="m">Reason</div><p>Multi-frame reasoning, consistent colony identity across views, analysis of 16 dimensions.</p></div>
+      <div class="visit rv"><div class="v">Q1 · JAN–MAR</div><div class="m">Watch less</div><p>Assemble coral video datasets; CoralVOS segmentation baselines; coral-aware frame selection and efficient visual processing.</p></div>
+      <div class="visit rv"><div class="v">Q2 · APR–JUN</div><div class="m">Reason</div><p>Multi-frame reasoning, consistent colony identity across views, coral-attribute analysis.</p></div>
       <div class="visit rv"><div class="v">Q3 · JUL–SEP</div><div class="m">Verify</div><p>Evidence-grounded reporting, claim verification, CoralLens-Bench protocols.</p></div>
       <div class="visit rv"><div class="v">Q4 · OCT–DEC</div><div class="m">Evaluate</div><p>Comparative evaluation and ablations, expert assessment, release and dissemination.</p></div>
     </div>
@@ -583,7 +584,7 @@ footer b{color:var(--ink-2)}
       <div><dt>LoRA fine-tuning</dt><dd>A light way to adapt a large model to a new domain, here coral imagery, by training a small number of extra parameters.</dd></div>
       <div><dt>Reasoning trace</dt><dd>The model's step-by-step explanation (chain of thought). In CoralLens each step must point to a frame.</dd></div>
       <div><dt>Hallucination</dt><dd>A statement a model makes that the evidence does not support.</dd></div>
-      <div><dt>CoralVQA</dt><dd>A public dataset of coral images with question–answer pairs covering 16 coral-understanding dimensions.</dd></div>
+      <div><dt>CoralVOS</dt><dd>A public dataset of 150 underwater coral videos in which every frame has a coral mask, used to test coral segmentation over time.</dd></div>
     </dl>
   </div>
 </section>
