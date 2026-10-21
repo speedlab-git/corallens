@@ -2,7 +2,7 @@
 
 **Watch Less, Verify More: Evidence-Grounded Coral Reef Monitoring with Vision-Language Models**
 
-Project website for a 1FAU Seed4Solutions proposal (I-SMART + HBOI, Florida Atlantic University, 2027).
+Project website for a 1FAU Seed Program proposal (I-SMART + HBOI, Florida Atlantic University, 2027).
 Lead PI: Ahmed Imteaj, Ph.D. (EECS, SPEED Lab). Co-PI: Bing Ouyang, Ph.D. (Harbor Branch Oceanographic Institute).
 
 ## Publish on GitHub Pages
