@@ -160,7 +160,7 @@ footer.site{max-width:1440px;margin:0 auto;padding:8px 24px 32px;font-size:13px;
 .fr{position:relative;border:0;padding:0;background:none;cursor:pointer;border-radius:6px;overflow:hidden;outline-offset:2px}
 .fr img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border:2px solid transparent;border-radius:6px}
 .fr.keep img{border-color:#2DD4BF}
-.fr.drop img{opacity:.38;filter:grayscale(.6)}
+.fr.dropped img{opacity:.38;filter:grayscale(.6)}
 .fr.sel img{border-color:#E39A2B}
 .fr.hit img{border-color:#E39A2B;box-shadow:0 0 0 2px #E39A2B}
 .fr .ts{position:absolute;left:4px;bottom:4px;font:500 10.5px 'JetBrains Mono',monospace;color:#fff;background:rgba(8,14,18,.75);padding:1px 5px;border-radius:4px}
@@ -200,3 +200,15 @@ footer.site{max-width:1440px;margin:0 auto;padding:8px 24px 32px;font-size:13px;
 .findlist{display:flex;flex-direction:column;gap:8px}
 .kind{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 @media (max-width:760px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}.vgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.tokrow{grid-template-columns:110px minmax(0,1fr) 54px}}
+
+/* visibility and enhancement */
+.cmp{user-select:none}
+.cmp .rawlayer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmpline{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 4px rgba(0,0,0,.6);transform:translateX(-1.5px);pointer-events:none}
+.route{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.route li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;color:var(--muted)}
+.route li b{font-weight:500;color:var(--ink)}
+.route li.on{border-color:var(--teal);background:var(--teal-soft);color:var(--teal-ink)}
+.route li.on b{font-weight:700}
+.fr .vb{position:absolute;right:4px;top:4px;font:600 10.5px 'JetBrains Mono',monospace;color:#fff;background:rgba(8,14,18,.75);padding:1px 5px;border-radius:4px}
+.fr .vb.low{background:#B4561A}

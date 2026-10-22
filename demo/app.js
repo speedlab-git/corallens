@@ -3,7 +3,7 @@
   'use strict';
   var STEPS = [
     ['Add video', 'Survey footage'],
-    ['Watch less', 'Frames + coral regions'],
+    ['Watch less', 'Frames, visibility, regions'],
     ['Reason', 'Per-view VLM + fusion'],
     ['Verify', 'Evidence-grounded report']
   ];
@@ -11,17 +11,17 @@
 
   // frames along the survey; score = informativeness used for the frame budget
   var FRAMES = [
-    { img: 'v0.jpg', t: '00:00:12', score: 0.82, why: 'new viewpoint, encrusting colony C4' },
-    { img: 'v1.jpg', t: '00:02:15', score: 0.91, why: 'sharp, brain coral C2 in view' },
-    { img: 'v2.jpg', t: '00:02:40', score: 0.95, why: 'keyframe: C1, C2 and C4 together' },
-    { img: 'v2dup.jpg', t: '00:02:44', score: 0.12, why: 'near-duplicate of 00:02:40' },
-    { img: 'v3.jpg', t: '00:03:58', score: 0.77, why: 'C2 from a new angle' },
-    { img: 'v4.jpg', t: '00:04:32', score: 0.86, why: 'pale edge on C2' },
-    { img: 'v5.jpg', t: '00:05:10', score: 0.35, why: 'little new coral coverage' },
-    { img: 'v6.jpg', t: '00:06:18', score: 0.8, why: 'turf algae on rubble' }
+    { img: 'v0.jpg', raw: 'v0_raw.jpg', vis: 0.34, venh: 0.78, fix: 'dark', t: '00:00:12', score: 0.82, why: 'new viewpoint, encrusting colony C4' },
+    { img: 'v1.jpg', vis: 0.86, t: '00:02:15', score: 0.91, why: 'sharp, brain coral C2 in view' },
+    { img: 'v2.jpg', vis: 0.91, t: '00:02:40', score: 0.95, why: 'keyframe: C1, C2 and C4 together' },
+    { img: 'v2dup.jpg', vis: 0.84, t: '00:02:44', score: 0.12, why: 'near-duplicate of 00:02:40' },
+    { img: 'v3.jpg', raw: 'v3_raw.jpg', vis: 0.29, venh: 0.81, fix: 'haze', t: '00:03:58', score: 0.77, why: 'C2 from a new angle' },
+    { img: 'v4.jpg', vis: 0.88, t: '00:04:32', score: 0.86, why: 'pale edge on C2' },
+    { img: 'v5.jpg', vis: 0.79, t: '00:05:10', score: 0.35, why: 'little new coral coverage' },
+    { img: 'v6.jpg', raw: 'v6_raw.jpg', vis: 0.46, venh: 0.84, fix: 'cast', t: '00:06:18', score: 0.8, why: 'turf algae on rubble' }
   ];
 
-  var VIEWS = [['view1.jpg', 'view 1 · 02:15'], ['view2.jpg', 'view 2 · 02:40'], ['view3.jpg', 'view 3 · 04:32'], ['view4.jpg', 'view 4 · turbid']];
+  var VIEWS = [['view1.jpg', 'view 1 · 02:15'], ['view2.jpg', 'view 2 · 02:40'], ['view3.jpg', 'view 3 · 04:32'], ['view4.jpg', 'view 4 · vis 0.31']];
   var DIMS = {
     type: { label: 'Coral type', ask: 'coral type', a: ['Brain', 'Brain', 'Brain', 'Brain'], fused: 'Brain coral', agree: [4, 4],
       trace: [['Observe', 'Meandering ridges and valleys across a domed colony.', 'v1, v2, v3'],
@@ -69,7 +69,9 @@
     { img: null, t: 'Disease signs', ev: [], tag: 'uncertain', note: 'no supporting frame' }
   ];
 
-  var state = { step: 0, budget: 6, sel: 2, regions: 'on', dim: 'type', finding: 0 };
+  var ROUTES = [['haze', 'Haze, turbid water', 'physics restoration'], ['dark', 'Darkness', 'low-light enhancement'], ['cast', 'Color cast', 'calibrated white balance'],
+                ['particles', 'Floating particles', 'multi-frame fusion'], ['skip', 'Clear frame', 'skip, no change']];
+  var state = { step: 0, budget: 6, sel: 2, vsel: 4, regions: 'on', dim: 'type', finding: 0, vmode: 'cmp', cut: 50 };
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -97,22 +99,46 @@
   function renderFrames() {
     var keep = keptSet(), strip = $('#strip'); strip.innerHTML = '';
     FRAMES.forEach(function (f, i) {
-      var b = el('button', 'fr ' + (keep[i] ? 'keep' : 'drop') + (state.sel === i ? ' sel' : ''));
+      var b = el('button', 'fr ' + (keep[i] ? 'keep' : 'dropped') + (state.sel === i ? ' sel' : ''));
       b.type = 'button';
       b.setAttribute('aria-label', 'Frame ' + f.t + (keep[i] ? ', kept' : ', dropped'));
-      b.innerHTML = '<img src="assets/' + f.img + '" alt=""><span class="ts">' + f.t.slice(3) + '</span>' + (keep[i] ? '' : '<span class="x" aria-hidden="true">×</span>');
-      b.addEventListener('click', function () { state.sel = i; render(); });
+      b.innerHTML = '<img src="assets/' + (f.raw || f.img) + '" alt=""><span class="ts">' + f.t.slice(3) + '</span><span class="vb' + (f.vis < 0.5 ? ' low' : '') + '">' + f.vis.toFixed(2) + '</span>' + (keep[i] ? '' : '<span class="x" aria-hidden="true">×</span>');
+      b.addEventListener('click', function () { state.sel = i; state.vsel = i; render(); });
       strip.appendChild(b);
     });
     var f = FRAMES[state.sel];
-    $('#frameNote').innerHTML = '<b style="color:var(--ink)">' + f.t + '</b> · ' + (keep[state.sel] ? 'kept: ' : 'dropped: ') + esc(f.why) + ' · informativeness ' + f.score.toFixed(2);
+    $('#frameNote').innerHTML = '<b style="color:var(--ink)">' + f.t + '</b> · ' + (keep[state.sel] ? 'kept: ' : 'dropped: ') + esc(f.why) + ' · informativeness ' + f.score.toFixed(2) + ' · visibility ' + f.vis.toFixed(2) + (f.raw ? ' (enhanced to ' + f.venh.toFixed(2) + ')' : '');
+    renderVis();
     var n = Object.keys(keep).length;
     $('#keptStat').textContent = n + ' / ' + FRAMES.length;
     $('#budgetv').textContent = n + ' of ' + FRAMES.length + ' frames';
     var isKey = state.sel === 2;
-    $('#keyImg').src = isKey ? 'assets/key.jpg' : 'assets/' + f.img;
+    $('#keyImg').src = isKey ? 'assets/key.jpg' : 'assets/' + f.img;  // regions run on the enhanced frame
     $('#keyCap').textContent = isKey ? 'keyframe 00:02:40 · 3 coral regions' : 'frame ' + f.t + (keep[state.sel] ? '' : ' (dropped)');
     $$('#keyFig .bx').forEach(function (b) { b.hidden = !(isKey && state.regions === 'on'); });
+  }
+
+  function renderVis() {
+    var f = FRAMES[state.vsel], raw = f.raw || f.img, enh = f.img;
+    $('#cmpEnh').src = 'assets/' + enh; $('#cmpRaw').src = 'assets/' + raw;
+    var cut = state.vmode === 'raw' ? 100 : state.vmode === 'enh' ? 0 : state.cut;
+    if (!f.raw) cut = 0;
+    $('#cmpRaw').style.clipPath = 'inset(0 ' + (100 - cut) + '% 0 0)';
+    $('#cmpLine').style.left = cut + '%'; $('#cmpLine').hidden = !(f.raw && state.vmode === 'cmp');
+    $('#cmpSlider').disabled = !(f.raw && state.vmode === 'cmp');
+    $('#cmpCapL').textContent = f.raw ? 'raw · vis ' + f.vis.toFixed(2) : f.t + ' · clear';
+    $('#cmpCapL').hidden = f.raw ? cut === 0 : false;
+    $('#cmpCapR').textContent = f.raw ? 'enhanced · vis ' + f.venh.toFixed(2) : 'no enhancement needed';
+    $('#cmpCapR').hidden = f.raw ? cut === 100 : true;
+    $('#visRaw').textContent = f.vis.toFixed(2);
+    $('#visRawStat').className = 'stat' + (f.vis < 0.5 ? ' warn' : '');
+    $('#visEnh').textContent = f.raw ? f.venh.toFixed(2) : '—';
+    var key = f.fix || 'skip', ul = $('#route'); ul.innerHTML = '';
+    ROUTES.forEach(function (r) {
+      var li = el('li', r[0] === key ? 'on' : ''); li.innerHTML = '<b>' + r[1] + '</b><span>→ ' + r[2] + '</span>'; ul.appendChild(li);
+    });
+    $('#visNote').textContent = f.raw ? 'Score below 0.5, so the frame is enhanced before SAM 2 and the VLM. Its visibility score travels with it and sets its weight in fusion.'
+      : 'Score above 0.5, so the frame passes through unchanged.';
   }
 
   function renderDims() {
@@ -143,7 +169,7 @@
     $('#meterI').style.width = Math.round(100 * d.agree[0] / 4) + '%';
     var abst = d.a.filter(function (x) { return x === '?'; }).length;
     $('#fusedNote').textContent = d.warn ? 'Views disagree, so the answer is passed to the report as "review" rather than stated as fact.'
-      : (abst ? abst + ' view abstained because of low visibility; the answer uses the clear views only.' : 'All views agree.');
+      : (abst ? abst + ' view abstained because of low visibility (0.31), so it gets low weight; the answer uses the clear views.' : 'All views agree.');
     $('#promptDim').textContent = d.ask;
   }
 
@@ -194,6 +220,7 @@
     var g = t.closest('[data-group]');
     if (g && t.dataset.v) { state[g.dataset.group] = t.dataset.v; render(); }
   });
+  $('#cmpSlider').addEventListener('input', function (e) { state.cut = Number(e.target.value); renderVis(); });
   $('#budget').addEventListener('input', function (e) { state.budget = Number(e.target.value); renderFrames(); });
   $('#up').addEventListener('change', function (e) {
     var n = e.target.files.length;

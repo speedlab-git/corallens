@@ -326,8 +326,8 @@ footer b{color:var(--ink-2)}
       </div>
     </div>
     <figure class="rv">
-      <div class="fig" style="background:#fff;padding:10px"><img src="assets/fig1-overview.png?v=20261020h" alt="CoralLens pipeline: (a) video and keyframes, (b) SAM 2 coral regions, (c) compact visual tokens, (d) multi-view reasoning, (e) cross-view fusion, (f) CoralLens-Bench evaluation, (g) evidence-grounded monitoring report" loading="lazy" data-zoom></div>
-      <figcaption><b>Figure 1. CoralLens pipeline.</b> (1) Sharp, non-redundant keyframes are selected from survey video, and SAM&nbsp;2 isolates coral regions. (2) An efficient vision encoder converts each view into compact visual tokens. A LoRA-tuned coral VLM answers each view with a frame-cited reasoning trace, and answers are fused by cross-view agreement. (3) The monitoring report links every finding to its supporting frames and flags low-agreement findings for review. Model outputs shown are illustrative. <span class="mono" style="font-size:12px">(click to enlarge)</span></figcaption>
+      <div class="fig" style="background:#fff;padding:10px"><img src="assets/fig1-overview.png?v=20261021b" alt="CoralLens pipeline: (a) clear keyframes with visibility scoring and enhancement, (b) SAM 2 coral regions, (c) compact visual tokens, (d) multi-view reasoning, (e) cross-view fusion, (f) CoralLens-Bench evaluation, (g) evidence-grounded monitoring report" loading="lazy" data-zoom></div>
+      <figcaption><b>Figure 1. CoralLens pipeline.</b> (a) Sharp, non-redundant keyframes are selected from survey video; each frame gets a visibility score, and murky frames are enhanced only as needed. (b) SAM&nbsp;2 isolates coral regions. (c) An efficient vision encoder converts each view into compact visual tokens. (d) A LoRA-tuned coral VLM answers each view with a frame-cited reasoning trace, and (e) answers are fused by cross-view agreement, with low-visibility views down-weighted. (f) CoralLens-Bench scores each stage. (g) The monitoring report links every finding to its supporting frames and flags low-agreement findings for review. Model outputs shown are illustrative. <span class="mono" style="font-size:12px">(click to enlarge)</span></figcaption>
     </figure>
     <div class="pipe">
       <div class="rv"><h4>Select frames</h4><p>Keep sharp frames with new viewpoints and coral coverage; drop near-duplicates.</p><span class="obj">→ Objective 1</span></div>
@@ -382,6 +382,7 @@ footer b{color:var(--ink-2)}
           <ul>
             <li><b>Locate coral.</b> Separate coral regions from water, rock, and other objects with SAM&nbsp;2.</li>
             <li><b>Select keyframes</b> by image clarity, viewing angle, coral coverage, and distinct visual features.</li>
+            <li><b>See through murky water.</b> Score each frame for darkness, haze, color cast, blur, and floating particles; enhance only frames that need it (physics-guided restoration, low-light enhancement, calibrated white balance, multi-frame fusion), check color-sensitive findings on both raw and enhanced frames, and report "uncertain" when footage is too poor to recover.</li>
             <li><b>Allocate attention</b> to coral regions with complex structure or uncertain observations, not to background.</li>
             <li><b>Compact visual tokens.</b> A hybrid convolution–attention vision encoder emits few tokens at high resolution, lowering time-to-first-token on long videos.</li>
           </ul>
@@ -480,7 +481,7 @@ footer b{color:var(--ink-2)}
       </div>
       <div class="rv">
         <p class="subhead">Ablations</p>
-        <div class="pill-list"><span>Keyframe selection</span><span>Region attention</span><span>Compact tokens</span><span>LoRA tuning</span><span>Reasoning trace</span><span>Cross-view fusion</span><span>Claim verification</span></div>
+        <div class="pill-list"><span>Keyframe selection</span><span>Visibility-aware enhancement</span><span>Region attention</span><span>Compact tokens</span><span>LoRA tuning</span><span>Reasoning trace</span><span>Cross-view fusion</span><span>Claim verification</span></div>
       </div>
     </div>
   </div>
@@ -554,7 +555,7 @@ footer b{color:var(--ink-2)}
       <div class="rv">
         <h3>Intellectual merit</h3>
         <ul>
-          <li><b>Coral-aware efficiency</b>: keyframe and region selection plus compact visual tokens for long underwater videos.</li>
+          <li><b>Coral-aware efficiency</b>: keyframe and region selection, visibility-aware enhancement of murky frames, and compact visual tokens for long underwater videos.</li>
           <li><b>Multi-view reasoning</b>: a coral-tuned VLM whose answers are fused across viewpoints with explicit uncertainty.</li>
           <li><b>Faithful reasoning and reporting</b>: frame-cited reasoning traces and claim verification for scientific reports.</li>
         </ul>

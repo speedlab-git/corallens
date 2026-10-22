@@ -73,13 +73,37 @@
 
 <!-- 2 · Frames and regions -->
 <section class="pane" data-step="1" aria-labelledby="h1" hidden>
-<div><div class="eyebrow">Step 2 of 4</div><h1 id="h1">Watch less: frames and coral regions</h1>
-<p class="lede">Sharp frames that add new viewpoints are kept; near-duplicates are dropped. Click any frame to inspect it.</p></div>
+<div><div class="eyebrow">Step 2 of 4</div><h1 id="h1">Watch less: frames, visibility and coral regions</h1>
+<p class="lede">Sharp frames that add new viewpoints are kept; near-duplicates are dropped. Every frame gets a visibility score, and murky frames are enhanced only as much as they need. Click any frame to inspect it.</p></div>
 <div class="card stack">
 <div class="head" style="align-items:center"><h2>Selected frames</h2>
 <div class="legend2"><span><i style="background:#2DD4BF"></i>kept</span><span><i style="background:#AEBAC0"></i>dropped</span><span><i style="background:#E39A2B"></i>inspecting</span></div></div>
 <div class="strip" id="strip"></div>
 <p class="muted small" id="frameNote" style="margin:0"></p>
+</div>
+<div class="card stack" id="visCard">
+<div class="head" style="align-items:center"><h2>Visibility and enhancement</h2>
+<div class="chips" role="group" aria-label="View mode" data-group="vmode">
+<button class="chip" type="button" data-v="raw" aria-pressed="false">Raw</button>
+<button class="chip" type="button" data-v="cmp" aria-pressed="true">Compare</button>
+<button class="chip" type="button" data-v="enh" aria-pressed="false">Enhanced</button>
+</div></div>
+<div class="row">
+<div class="col3">
+<figure class="viewer cmp" id="cmpFig"><img id="cmpEnh" src="assets/v5.jpg" alt="Enhanced frame"><img id="cmpRaw" class="rawlayer" src="assets/v5_raw.jpg" alt="Raw frame"><span class="cmpline" id="cmpLine" aria-hidden="true"></span>
+<figcaption id="cmpCapL">raw</figcaption><figcaption class="tr" id="cmpCapR">enhanced</figcaption></figure>
+<label class="small muted" style="display:flex;gap:10px;align-items:center">Before / after <input type="range" id="cmpSlider" min="0" max="100" value="50" style="flex:1" aria-label="Before and after slider"></label>
+</div>
+<div class="col2">
+<div class="stats">
+<div class="stat" id="visRawStat"><div class="v" id="visRaw">0.29</div><div class="k">visibility, raw</div></div>
+<div class="stat"><div class="v" id="visEnh">0.81</div><div class="k">visibility, enhanced</div></div>
+</div>
+<ul class="route" id="route"></ul>
+<p class="muted small" id="visNote" style="margin:0"></p>
+</div>
+</div>
+<p class="muted small" style="margin:0">Degradations are simulated for this demo. Restoration is physics-guided (water absorption and scattering), not a generative fill; bleaching is read on both raw and enhanced frames.</p>
 </div>
 <div class="row">
 <div class="col3">
