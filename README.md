@@ -15,7 +15,7 @@ Lead PI: Ahmed Imteaj, Ph.D. (EECS, SPEED Lab). Co-PI: Bing Ouyang, Ph.D. (Harbo
 
 ```
 index.html                      single-page project site (no build step)
-assets/coralReef_SPEED_Lab.mp4  CoralLens teaser video (75 s, 18 MB, H.264)
+assets/coralReef_SPEED_Lab.mp4  CoralLens teaser video (87 s, 19 MB, H.264)
 assets/video-poster.jpg         poster frame for the video
 assets/fig1-overview.png        Figure 1 – CoralLens pipeline
 assets/demo-preview.jpg         preview image for the demo section
